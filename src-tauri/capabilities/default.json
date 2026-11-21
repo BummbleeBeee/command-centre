@@ -2,7 +2,7 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Least-privilege permissions for the Command Centre window. No filesystem, shell or opener plugin is exposed to the web layer: all file and process access goes through validated Rust commands.",
-  "windows": ["main", "display-*", "hub", "panel"],
+  "windows": ["main", "display-*", "display2-*", "hub", "panel"],
   "permissions": [
     "core:default",
     "core:window:allow-start-dragging",

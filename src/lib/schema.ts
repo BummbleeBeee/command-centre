@@ -456,6 +456,9 @@ export function validateV3(raw: Obj): { config: Config; warnings: string[] } {
         bounds: isObj(d.bounds) && ["x", "y", "width", "height"].every((k) => typeof (d.bounds as Obj)[k] === "number") ? (d.bounds as unknown as DisplayState["bounds"]) : undefined,
         floating: fr,
         buttonPosition: bpos,
+        secondMode: d.secondMode === "floating" || d.secondMode === "sidebar" || d.secondMode === "notch" || d.secondMode === "button" ? d.secondMode : undefined,
+        secondFloating: isObj(d.secondFloating) && ["x", "y", "width", "height"].every((k) => typeof (d.secondFloating as Obj)[k] === "number") ? (d.secondFloating as unknown as DisplayState["floating"]) : undefined,
+        secondButtonPosition: isObj(d.secondButtonPosition) && typeof d.secondButtonPosition.x === "number" && typeof d.secondButtonPosition.y === "number" ? { x: d.secondButtonPosition.x as number, y: d.secondButtonPosition.y as number } : undefined,
       };
     }
   }

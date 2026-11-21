@@ -52,6 +52,10 @@ export interface AppApi {
   setSidebarRevealed: (v: boolean) => void;
   /** Sidebar is pinned (its screen strip is reserved). */
   pinned: boolean;
+  /** This monitor's saved state (second mode, sidebar side…). */
+  ds?: import("../types").DisplayState;
+  /** True in the window that shows the monitor's second mode. */
+  isSecond?: boolean;
   /** Notch only: grow the window downward by this many px so a dropdown fits (0 = back to normal). */
   requestSpace?: (px: number) => void;
   /** Notch only: the notch's own height while extra space is reserved below it. */

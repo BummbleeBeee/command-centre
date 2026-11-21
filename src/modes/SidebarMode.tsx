@@ -59,6 +59,10 @@ export function SidebarMode() {
     app.setPage(pages[(pageIndex + dir + pages.length) % pages.length].id);
   };
   const flipSide = () => app.updateDisplay((d) => ({ ...d, sidebarSide: side === "left" ? "right" : "left" }));
+  const toggleHover = () => {
+    if (s.sidebarExpandOnHover) setExpanded(false);
+    app.update((c) => ({ ...c, settings: { ...c.settings, sidebarExpandOnHover: !c.settings.sidebarExpandOnHover } }));
+  };
   const togglePin = () => app.update((c) => ({ ...c, settings: { ...c.settings, sidebarPinned: !c.settings.sidebarPinned } }));
 
   return (
@@ -114,6 +118,8 @@ export function SidebarMode() {
       <RunBar />
       <div className={`sb-bottom ${expanded ? "wide" : ""}`}>
         <IconButton icon="sparkles" label="Tools: AI chat, Spotify, notes, alarms, classes, hub" onClick={() => app.openPanel("ai")} />
+        {app.pinned && <IconButton icon="sidebar" active={!s.sidebarExpandOnHover}
+          label={s.sidebarExpandOnHover ? "Stop expanding on hover (icons only)" : "Expand on hover again"} onClick={toggleHover} />}
         <IconButton icon="settings" label="Settings" onClick={() => app.setOverlay({ kind: "settings" })} />
         {expanded && <>
           <IconButton icon="arrow-right" label={`Move sidebar to the ${side === "left" ? "right" : "left"} edge (this monitor)`} onClick={flipSide} />

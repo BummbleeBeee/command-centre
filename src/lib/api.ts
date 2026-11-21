@@ -80,7 +80,7 @@ export const api = {
   mediaArt: () => call<string | null>("media_art"),
   mediaControl: (action: MediaAction, value?: number) => call<boolean>("media_control", { action, value }),
   listMonitors: () => call<MonitorInfo[]>("list_monitors"),
-  syncDisplayWindows: (displays: string[]) => call<void>("sync_display_windows", { displays }),
+  syncDisplayWindows: (displays: string[], seconds: string[] = []) => call<void>("sync_display_windows", { displays, seconds }),
   setAlarms: (alarms: { id: string; label: string; time: string; days: number[]; enabled: boolean }[]) => call<void>("set_alarms", { alarms }),
   startTimer: (id: string, label: string, seconds: number) => call<TimerInfo>("start_timer", { id, label, seconds }),
   snoozeAlarm: (id: string, label: string, minutes: number) => call<TimerInfo>("snooze_alarm", { id, label, minutes }),

@@ -34,6 +34,15 @@ export function reconcileDisplays(displays: Config["displays"], monitors: Monito
   return changed ? next : null;
 }
 
+/** Monitors that show a second mode too: enabled, with a second mode different from their profile's. */
+export function secondMonitors(c: Config, assigned: string[]): string[] {
+  return assigned.filter((n) => {
+    const d = c.displays[n];
+    const p = c.profiles.find((x) => x.id === d?.profileId) ?? c.profiles[0];
+    return !!d?.secondMode && d.secondMode !== p.displayMode;
+  });
+}
+
 /** Which monitors get a launcher: the enabled ones, or the primary monitor if none is enabled. */
 export function enabledMonitors(c: Config, monitors: MonitorInfo[]): string[] {
   const on = monitors.filter((m) => c.displays[m.name]?.enabled).map((m) => m.name);

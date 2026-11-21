@@ -76,6 +76,12 @@ export function MonitorsTab() {
             <option value="left">Sidebar on the left</option>
             <option value="right">Sidebar on the right</option>
           </select>
+          <select value={c.displays[m.name]?.secondMode && c.displays[m.name]?.secondMode !== profileOf(m.name).displayMode ? c.displays[m.name]?.secondMode : "none"} disabled={!active.has(m.name)} title="A second mode shown on this monitor at the same time"
+            aria-label={`Second mode for ${title(m)}`}
+            onChange={(e) => app.update((cfg) => ({ ...cfg, displays: { ...cfg.displays, [m.name]: { ...(cfg.displays[m.name] ?? { enabled: active.has(m.name), profileId: cfg.profiles[0].id }), secondMode: e.target.value === "none" ? undefined : (e.target.value as DisplayMode) } } }))}>
+            <option value="none">No second mode</option>
+            {MODES.filter((x) => x.value !== profileOf(m.name).displayMode).map((x) => <option key={x.value} value={x.value}>Also: {x.label}</option>)}
+          </select>
           <label className="switch compact" title="Show Command Centre on this monitor"><input type="checkbox" checked={active.has(m.name)} onChange={(e) => setEnabled(m.name, e.target.checked)} /><i /></label>
         </div>
       ))}

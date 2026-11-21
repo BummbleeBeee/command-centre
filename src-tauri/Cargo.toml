@@ -1,6 +1,6 @@
 [package]
 name = "command-centre"
-version = "1.0.0"
+version = "1.0.1"
 description = "Command Centre - a customisable Stream Deck-style launcher for Windows"
 authors = ["Command Centre"]
 edition = "2021"

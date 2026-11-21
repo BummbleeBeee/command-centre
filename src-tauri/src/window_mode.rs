@@ -239,14 +239,39 @@ pub fn display_label(name: &str) -> String {
     format!("display-{}", if clean.is_empty() { "x".to_string() } else { clean })
 }
 
+/// Label of the window that shows a monitor's second mode (e.g. a notch beside a sidebar).
+pub fn second_label(name: &str) -> String {
+    format!("display2-{}", &display_label(name)["display-".len()..])
+}
+
+fn launcher_window(app: &AppHandle, label: &str, url: String, name: &str) -> Result<(), String> {
+    WebviewWindowBuilder::new(app, label, WebviewUrl::App(url.into()))
+        .title("Command Centre")
+        .decorations(false)
+        .transparent(true)
+        .always_on_top(true)
+        .skip_taskbar(true)
+        .shadow(false)
+        .resizable(false)
+        .visible(false)
+        .inner_size(300.0, 300.0)
+        .disable_drag_drop_handler()
+        .build()
+        .map(|_| ())
+        .map_err(|e| format!("Could not open a window for {name}: {e}"))
+}
+
 /// Makes sure exactly one extra launcher window exists per listed monitor (the main window
-/// covers the first enabled monitor). Windows for monitors no longer listed are closed.
+/// covers the first enabled monitor), plus one "second mode" window for each monitor in
+/// `seconds`. Windows no longer wanted are closed.
 /// Must be async: creating a window from a synchronous command deadlocks on Windows.
 #[tauri::command]
-pub async fn sync_display_windows(app: AppHandle, displays: Vec<String>) -> Result<(), String> {
-    let wanted: HashSet<String> = displays.iter().map(|d| display_label(d)).collect();
+pub async fn sync_display_windows(app: AppHandle, displays: Vec<String>, seconds: Option<Vec<String>>) -> Result<(), String> {
+    let seconds = seconds.unwrap_or_default();
+    let mut wanted: HashSet<String> = displays.iter().map(|d| display_label(d)).collect();
+    wanted.extend(seconds.iter().map(|d| second_label(d)));
     for (label, w) in app.webview_windows() {
-        if label.starts_with("display-") && !wanted.contains(&label) {
+        if (label.starts_with("display-") || label.starts_with("display2-")) && !wanted.contains(&label) {
             let _ = w.destroy();
         }
     }
@@ -256,19 +281,15 @@ pub async fn sync_display_windows(app: AppHandle, displays: Vec<String>) -> Resu
             continue;
         }
         let query: String = url::form_urlencoded::byte_serialize(name.as_bytes()).collect();
-        WebviewWindowBuilder::new(&app, &label, WebviewUrl::App(format!("index.html?display={query}").into()))
-            .title("Command Centre")
-            .decorations(false)
-            .transparent(true)
-            .always_on_top(true)
-            .skip_taskbar(true)
-            .shadow(false)
-            .resizable(false)
-            .visible(false)
-            .inner_size(300.0, 300.0)
-            .disable_drag_drop_handler()
-            .build()
-            .map_err(|e| format!("Could not open a window for {name}: {e}"))?;
+        launcher_window(&app, &label, format!("index.html?display={query}"), &name)?;
+    }
+    for name in seconds {
+        let label = second_label(&name);
+        if app.get_webview_window(&label).is_some() {
+            continue;
+        }
+        let query: String = url::form_urlencoded::byte_serialize(name.as_bytes()).collect();
+        launcher_window(&app, &label, format!("index.html?display={query}&second=1"), &name)?;
     }
     Ok(())
 }
@@ -490,6 +511,7 @@ mod tests {
     fn display_labels_are_safe() {
         assert_eq!(display_label(r"\\.\DISPLAY2"), "display-DISPLAY2");
         assert_eq!(display_label("Monitor 3"), "display-Monitor3");
+        assert_eq!(second_label(r"\\.\DISPLAY2"), "display2-DISPLAY2");
     }
 
     #[test]

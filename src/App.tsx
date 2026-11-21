@@ -18,7 +18,7 @@ import { Toasts } from "./components/Toasts";
 import { AppFlyout } from "./components/AppFlyout";
 import { applyTheme } from "./lib/theme";
 import { NOTCH, notchExpandedSize } from "./lib/notch";
-import { enabledMonitors, panelRect, reconcileDisplays } from "./lib/monitors";
+import { enabledMonitors, panelRect, reconcileDisplays, secondMonitors } from "./lib/monitors";
 import { HubRoot } from "./tools/HubView";
 
 const IS_HUB = new URLSearchParams(window.location.search).has("hub");
@@ -34,6 +34,8 @@ function Launcher() {
 }
 
 const URL_DISPLAY = new URLSearchParams(window.location.search).get("display");
+/** This window shows the monitor's second mode (e.g. the notch beside a sidebar). */
+const URL_SECOND = new URLSearchParams(window.location.search).get("second") === "1";
 const URL_PANEL = (() => { try { const p = new URLSearchParams(window.location.search).get("panel"); return p ? (JSON.parse(p) as Overlay) : null; } catch { return null; } })();
 
 function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config: Config } }) {
@@ -84,10 +86,11 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
   }, [monitors, isMain, update]);
 
   // Main window opens/closes one launcher window per additional enabled monitor.
-  const extraKey = JSON.stringify(assigned.slice(1));
+  const seconds = secondMonitors(config, assigned);
+  const extraKey = JSON.stringify([assigned.slice(1), seconds]);
   useEffect(() => {
     if (!isDesktop() || !isMain || !monitors.length) return;
-    void api.syncDisplayWindows(assigned.slice(1)).catch((e) => toast({ kind: "error", title: "Monitors", detail: (e as Error).message }));
+    void api.syncDisplayWindows(assigned.slice(1), seconds).catch((e) => toast({ kind: "error", title: "Monitors", detail: (e as Error).message }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [extraKey, isMain, monitors.length]);
 
@@ -104,18 +107,20 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
     update((c) => ({ ...c, profiles: c.profiles.map((p) => (p.id === id ? fn(p) : p)) }));
   }, [update, profile.id]);
 
-  const mode: DisplayMode = isPanel || overlay ? "floating" : profile.displayMode;
+  /** The mode this window shows when no screen is open over it. */
+  const baseMode: DisplayMode = URL_SECOND ? ds.secondMode ?? "button" : profile.displayMode;
+  const mode: DisplayMode = isPanel || overlay ? "floating" : baseMode;
   const sidebarSide = ds.sidebarSide ?? profile.sidebarSide;
   const pinned = mode === "sidebar" && s.sidebarPinned;
   const sidebarHidden = mode === "sidebar" && s.sidebarAutoHide && !pinned && !sidebarRevealed && !expanded;
   // In compact modes, settings/tools/editors open in their own window so the launcher stays open.
   const setOverlay = useCallback((o: Overlay) => {
-    if (!isPanel && o && isDesktop() && profile.displayMode !== "floating") {
+    if (!isPanel && o && isDesktop() && baseMode !== "floating") {
       void api.openPanelWindow(JSON.stringify(o), displayRef.current || undefined).catch(() => setOverlayRaw(o));
       return;
     }
     setOverlayRaw(o);
-  }, [isPanel, profile.displayMode]);
+  }, [isPanel, baseMode]);
   useEffect(() => {
     if (!isPanel) return;
     if (overlay === null) {
@@ -166,7 +171,7 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
       mode,
       expanded,
       alwaysOnTop: c.settings.alwaysOnTop,
-      floating: isPanel ? panelRect(c.window.panel, monitors.find((m) => m.name === displayRef.current)) : d?.floating ?? (first ? c.window.floating : undefined),
+      floating: isPanel ? panelRect(c.window.panel, monitors.find((m) => m.name === displayRef.current)) : URL_SECOND ? d?.secondFloating : d?.floating ?? (first ? c.window.floating : undefined),
       floatingDefault: isPanel ? { width: 760, height: 600 } : { width: 700, height: 560 },
       sidebarSide,
       sidebarWidth: sidebarHidden ? 12 : 78,
@@ -175,7 +180,7 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
       notchExpandedSize: notchExpanded,
       buttonSize: 62,
       buttonExpandedSize: { width: 360, height: 360 },
-      buttonPosition: d?.buttonPosition ?? (first ? c.window.buttonPosition : undefined),
+      buttonPosition: URL_SECOND ? d?.secondButtonPosition : d?.buttonPosition ?? (first ? c.window.buttonPosition : undefined),
       monitor: displayRef.current || undefined,
       pinnedWidth: pinned && expanded ? 78 : undefined,
     };
@@ -194,7 +199,7 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, expanded, geometryKey, s.alwaysOnTop, geometryNonce, display, ready, toast]);
 
-  useEffect(() => { setExpanded(false); }, [profile.displayMode, overlay]);
+  useEffect(() => { setExpanded(false); }, [baseMode, overlay]);
   // Give the reserved strip back when the sidebar is unpinned or another mode is chosen.
   useEffect(() => { if (isDesktop() && !pinned && !isPanel) void api.appbarRemove().catch(() => undefined); }, [pinned, isPanel]);
 
@@ -214,9 +219,9 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
           const size = await w.outerSize();
           const rect = { x: pos.x, y: pos.y, width: size.width, height: size.height };
           if (windowLabel() === "panel") update((c) => ({ ...c, window: { ...c.window, panel: rect } }));
-          else updateDisplay((d) => ({ ...d, floating: rect }));
+          else updateDisplay((d) => (URL_SECOND ? { ...d, secondFloating: rect } : { ...d, floating: rect }));
         } else if (modeRef.current === "button" && !expandedRef.current) {
-          updateDisplay((d) => ({ ...d, buttonPosition: { x: pos.x, y: pos.y } }));
+          updateDisplay((d) => (URL_SECOND ? { ...d, secondButtonPosition: { x: pos.x, y: pos.y } } : { ...d, buttonPosition: { x: pos.x, y: pos.y } }));
         }
       }, 450);
     };
@@ -395,6 +400,7 @@ function Shell({ store }: { store: ReturnType<typeof useConfigStore> & { config:
     reapplyGeometry: () => setGeometryNonce((n) => n + 1),
     display, isMain, monitors, profile, visiblePages: pagesShown, updateProfile, updateDisplay, openPanel,
     sidebarSide, sidebarHidden, setSidebarRevealed, pinned,
+    ds, isSecond: URL_SECOND,
     requestSpace: mode === "notch" ? requestSpace : undefined,
     notchHeight: mode === "notch" && extraSpace ? notchBase.height : undefined,
     openFlyout: (b, anchor) => {

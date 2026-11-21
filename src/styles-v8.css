@@ -80,3 +80,7 @@
   mask: radial-gradient(circle 252px at calc(100% + 198px) 50%, transparent 251px, #000 252px); }
 .hub-side.side-left.open { translate: 0 -50%; }
 .hub-side.side-left .side-inner { inset: 14px 74px 14px 16px; }
+
+/* ---------------- second mode on one monitor ---------------- */
+.row.second-mode { align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.row.second-mode .seg { flex-wrap: wrap; }

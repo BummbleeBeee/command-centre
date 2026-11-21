@@ -55,6 +55,8 @@ It works in four display modes that share the same buttons, pages and settings:
 | **Hub Tools** | Hub → Tools (replaces Pages) | Volume knob with mute, brightness knob (laptops), keep awake, and quick tools: notes, alarms, classes, Spotify, AI, screenshot, show desktop, Task Manager, lock. |
 | **Links** | Hub → Apps, below the apps | Websites you open often: type an address (e.g. `youtube.com`), optional name; click to open. Edit mode removes them. |
 | **Stay on desktop** | Hub → Tools, or hub settings | The hub circle stays on the desktop (even after Show Desktop) but **below** all open apps; while it's open it comes to the front. |
+| **Two modes on one monitor** | Settings → General → “Also show on this monitor”, or Settings → Monitors | Run any two modes together on the same screen, e.g. the notch **and** the sidebar. Each keeps its own position. |
+| **Icons-only sidebar** | Pinned sidebar → button above Settings | Stops the pinned sidebar expanding when you hover it; click again to turn hover-expand back on (double-click the clock still expands it). |
 
 New step types for buttons: **Keep PC awake** (minutes / until off / turn off), **Start a timer**, and **Open a tool** (Spotify, notes, alarms, keep awake, Ask AI).
 

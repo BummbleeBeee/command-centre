@@ -157,6 +157,10 @@ export interface DisplayState {
   bounds?: Rect;
   floating?: Rect;
   buttonPosition?: { x: number; y: number };
+  /** A second mode shown on this monitor at the same time (e.g. a notch beside the sidebar). */
+  secondMode?: DisplayMode;
+  secondFloating?: Rect;
+  secondButtonPosition?: { x: number; y: number };
 }
 
 export interface Alarm {

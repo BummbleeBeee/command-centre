@@ -55,6 +55,15 @@ export function GeneralTab() {
           </button>
         ))}
       </div>
+      <div className="row second-mode">
+        <span className="grow"><strong>Also show on this monitor</strong><br /><small className="dim">Run two at once, e.g. the notch and the sidebar</small></span>
+        <div className="seg">
+          <button className={!app.ds?.secondMode || app.ds.secondMode === app.profile.displayMode ? "active" : ""} onClick={() => app.updateDisplay((d) => ({ ...d, secondMode: undefined }))}>Nothing</button>
+          {MODES.filter((m) => m.value !== app.profile.displayMode).map((m) => (
+            <button key={m.value} className={app.ds?.secondMode === m.value ? "active" : ""} onClick={() => app.updateDisplay((d) => ({ ...d, secondMode: m.value }))}>{m.label}</button>
+          ))}
+        </div>
+      </div>
 
       <PanelSize />
       <h2>Behaviour</h2>

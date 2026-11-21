@@ -1,5 +1,7 @@
 # Command Centre
 
+**[⬇ Download the latest Windows installer](https://github.com/BummbleeBeee/command-centre/releases/latest)**: get `Command Centre_x.y.z_x64-setup.exe`, run it, and open Command Centre from the Start menu (Windows 10/11, 64-bit). The installer isn't code-signed, so SmartScreen may warn: click *More info* → *Run anyway*.
+
 A customisable, Stream Deck-style launcher for **Windows 10 and 11**, built with Tauri 2, React, TypeScript and Rust.
 It works in four display modes that share the same buttons, pages and settings:
 

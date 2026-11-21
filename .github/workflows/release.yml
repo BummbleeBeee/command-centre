@@ -1,0 +1,38 @@
+name: Release
+
+# Builds the Windows installer and publishes it on the Releases page.
+# Runs when a version tag is pushed (e.g. v1.0.0), or by hand from the Actions tab.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - run: npx vitest run
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseName: Command Centre ${{ github.ref_type == 'tag' && github.ref_name || 'v__VERSION__' }}
+          releaseBody: |
+            **Download:** `Command Centre_x.y.z_x64-setup.exe` below, run it, and Command Centre starts from the Start menu.
+            Windows 10/11 (64-bit). Windows SmartScreen may warn because the installer isn't code-signed: click *More info* → *Run anyway*.
+          releaseDraft: false
+          prerelease: false

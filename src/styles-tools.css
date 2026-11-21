@@ -1,0 +1,113 @@
+/* Tools, monitors and alarms (schema 4 features). Uses the theme tokens from styles.css. */
+.media-art { overflow: hidden; padding: 0; }
+.media-art img { width: 100%; height: 100%; object-fit: cover; }
+.awake-chip { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border-radius: 999px; font-size: 11px; font-weight: 600; color: #0b1020; background: var(--ok); flex-shrink: 0; }
+.tools-body .tab-body { padding-top: 14px; }
+
+/* Spotify */
+.spotify { display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap; }
+.spotify-art { width: 210px; height: 210px; flex-shrink: 0; border-radius: 16px; overflow: hidden; display: grid; place-items: center; color: var(--text-faint);
+  background: linear-gradient(145deg, rgba(30, 215, 96, .25), var(--field)); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .6); border: 1px solid var(--line); }
+.spotify-art img { width: 100%; height: 100%; object-fit: cover; }
+.spotify-main { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.spotify-source { display: flex; align-items: center; gap: 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-dim); }
+.spotify-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+.spotify-dot.on { background: #1ed760; box-shadow: 0 0 8px #1ed760; }
+.spotify-title { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.spotify-artist { margin: 0; color: var(--text-dim); font-size: 13px; }
+.spotify-progress { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.spotify-progress .bar { flex: 1; height: 5px; border-radius: 5px; background: var(--line-strong); cursor: pointer; position: relative; }
+.spotify-progress .bar:hover { height: 7px; }
+.spotify-progress .bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: #1ed760; transition: width .5s linear; }
+.spotify-controls { display: flex; align-items: center; gap: 10px; }
+.spotify-controls button { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; color: var(--text-dim); }
+.spotify-controls button:hover:not(:disabled) { color: var(--text); background: var(--field); }
+.spotify-controls button.on { color: #1ed760; }
+.spotify-controls button.play { width: 50px; height: 50px; background: var(--text); color: var(--bg-solid); }
+.spotify-controls button.play:hover:not(:disabled) { transform: scale(1.06); background: var(--text); color: var(--bg-solid); }
+.repeat-one { position: absolute; right: 6px; top: 6px; font-size: 8px; }
+.spotify-open { align-self: flex-start; margin-top: 4px; }
+
+/* Sticky notes */
+.notes { display: flex; flex-direction: column; gap: 12px; }
+.notes .search { max-width: none; margin: 0; }
+.note-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.note { display: flex; flex-direction: column; min-height: 170px; border-radius: 12px; overflow: hidden; color: #1d1a12;
+  background: linear-gradient(170deg, color-mix(in srgb, var(--note) 92%, white), var(--note)); box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .6); animation: pop calc(.2s * var(--speed, 1)) var(--ease); }
+.note textarea { flex: 1; resize: none; border: 0; outline: 0; background: transparent; color: #1d1a12; padding: 12px; font: 13px/1.45 "Segoe UI Variable Text", "Segoe UI", sans-serif; user-select: text; min-height: 120px; }
+.note textarea::placeholder { color: rgba(29, 26, 18, .45); }
+.note-foot { display: flex; align-items: center; gap: 4px; padding: 4px 6px 6px 10px; background: rgba(0, 0, 0, .06); }
+.note-foot small { margin-left: auto; color: rgba(29, 26, 18, .6); font-size: 10.5px; }
+.note-foot .icon-btn { color: rgba(29, 26, 18, .6); width: 26px; height: 26px; }
+.note-foot .icon-btn:hover { background: rgba(0, 0, 0, .08); color: #1d1a12; }
+.note-colors { display: flex; gap: 3px; }
+.note-colors button { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(0, 0, 0, .25); }
+.note-colors button.active { border-color: #1d1a12; transform: scale(1.2); }
+
+/* Alarms & timers */
+.alarms { display: flex; flex-direction: column; gap: 12px; }
+.alarms h3 { display: flex; align-items: center; gap: 8px; }
+.alarm-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.alarm-row.off { opacity: .55; }
+input.alarm-time { height: 44px !important; font-size: 22px; font-weight: 300; width: 150px; font-variant-numeric: tabular-nums; color-scheme: dark; }
+[data-scheme="light"] input.alarm-time { color-scheme: light; }
+.alarm-mid { display: flex; flex-direction: column; gap: 6px; }
+input.alarm-label { border: 0; outline: 0; background: none; font-weight: 600; font-size: 13px; color: var(--text); padding: 0; height: auto; }
+.day-pills { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.day-pills button { width: 24px; height: 24px; border-radius: 50%; font-size: 10.5px; font-weight: 700; background: var(--field); color: var(--text-dim); }
+.day-pills button.on { background: var(--accent); color: #0b1020; }
+.day-pills small { margin: 0 6px; }
+.switch.compact { padding: 0; border: 0; }
+.timer-list { display: flex; flex-direction: column; gap: 6px; }
+.timer-row { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 10px; background: var(--field); }
+.timer-left { font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; min-width: 90px; }
+
+/* Keep awake */
+.awake { display: flex; flex-direction: column; gap: 14px; }
+.awake-hero { display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--line); }
+.awake-hero h3 { margin: 0 0 4px; font-size: 15px; }
+.awake-hero p { margin: 0; }
+.awake-hero > div { flex: 1; }
+.awake-icon { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; flex-shrink: 0; color: var(--text-dim); background: var(--field); }
+.awake-hero.on { border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.awake-hero.on .awake-icon { color: #0b1020; background: var(--ok); box-shadow: 0 8px 24px -8px var(--ok); }
+.awake-presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; }
+
+/* Ask AI */
+.ask-ai { display: flex; flex-direction: column; gap: 12px; }
+.ai-apps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ai-app { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 12px; align-items: center; text-align: left; padding: 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--line); }
+.ai-app:hover:not(:disabled) { border-color: var(--line-strong); background: var(--surface-hover); }
+.ai-mark { grid-row: span 2; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; color: white; }
+.ai-app.claude .ai-mark { background: #d97757; }
+.ai-app.chatgpt .ai-mark { background: #10a37f; }
+.ai-app small { color: var(--text-dim); font-size: 11px; }
+textarea.ai-input { resize: vertical; min-height: 110px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); font: 13px/1.5 "Segoe UI Variable Text", "Segoe UI", sans-serif; outline: 0; user-select: text; }
+textarea.ai-input:focus { border-color: var(--accent); }
+
+/* Alarm ringing screen */
+.ring { display: grid; place-items: center; text-align: center; }
+.ring-body { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 20px; }
+.ring-icon { display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; color: #0b1020; background: var(--accent); animation: ringPulse 1.1s ease-in-out infinite; }
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); rotate: -6deg; }
+  50% { box-shadow: 0 0 0 22px transparent; rotate: 6deg; }
+}
+.ring-kind { margin: 12px 0 0; text-transform: uppercase; letter-spacing: 1.2px; font-size: 11px; color: var(--text-dim); }
+.ring-time { margin: 0; font-size: 64px; font-weight: 200; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+.ring-label { margin: 0 0 14px; font-size: 16px; }
+.ring-actions .btn.big { height: 42px; padding: 0 28px; font-size: 15px; }
+
+/* Monitors */
+.monitor-map { position: relative; margin: 6px 0 4px; }
+.monitor { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 8px; border: 2px solid var(--line-strong); background: var(--field); color: var(--text-dim); transition: border-color .15s, background .15s; overflow: hidden; }
+.monitor strong { font-size: 22px; font-weight: 700; line-height: 1; }
+.monitor span { font-size: 11.5px; font-weight: 600; }
+.monitor small { font-size: 10px; color: var(--text-faint); }
+.monitor em { position: absolute; top: 4px; right: 6px; font-style: normal; font-size: 9px; color: var(--accent); }
+.monitor:hover { border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+.monitor.on { border-color: var(--accent); color: var(--text); background: linear-gradient(150deg, var(--accent-soft), color-mix(in srgb, var(--accent) 6%, transparent)); }
+.monitor-row { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.monitor-row.off { opacity: .6; }
+.card.current { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.page-picks { gap: 6px; }

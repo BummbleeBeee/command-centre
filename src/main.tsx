@@ -1,0 +1,11 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles.css";
+import "./styles-tools.css";
+import "./styles-fx.css";
+import "./styles-v6.css";
+import "./styles-v7.css";
+import "./styles-v8.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(<React.StrictMode><App /></React.StrictMode>);

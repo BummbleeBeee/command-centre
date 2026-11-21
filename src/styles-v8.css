@@ -1,0 +1,82 @@
+/* Dial knob, duration picker, dropdown popovers, hub tools/links, left-opening hub panel. */
+
+/* ---------------- round knob ---------------- */
+.knob { position: relative; flex-shrink: 0; touch-action: none; }
+.knob svg { width: 100%; height: 100%; cursor: grab; outline: none; overflow: visible; }
+.knob svg:active { cursor: grabbing; }
+.knob svg:focus-visible .knob-face { stroke: var(--accent); }
+.knob-face { fill: color-mix(in srgb, var(--text) 7%, var(--bg-solid)); stroke: var(--line-strong); stroke-width: 1;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .35)); }
+.knob-track { fill: none; stroke: color-mix(in srgb, var(--text) 12%, transparent); stroke-width: 6; stroke-linecap: round; }
+.knob-fill { fill: none; stroke: var(--knob); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--knob) 60%, transparent)); }
+.knob-tick { stroke: var(--knob); stroke-width: 2.5; stroke-linecap: round; }
+.knob-handle { fill: #fff; stroke: var(--knob); stroke-width: 2.5; transition: r .12s; }
+.knob svg:hover .knob-handle { r: 7.5; }
+.knob-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; line-height: 1.15; }
+.knob-center b { font-size: 15px; font-variant-numeric: tabular-nums; }
+.knob-center small { font-size: 9.5px; color: var(--text-faint); }
+
+/* ---------------- duration picker ---------------- */
+.duration { display: flex; flex-direction: column; gap: 10px; }
+.duration-presets { display: flex; flex-wrap: wrap; gap: 5px; }
+.duration-presets .chip { flex: 1 1 auto; justify-content: center; }
+.duration-dial { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.duration-dial .btn { width: 100%; justify-content: center; }
+
+/* ---------------- dropdown popover ---------------- */
+.popover { position: fixed; z-index: 1000; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; padding: 12px; border-radius: 14px;
+  background-color: color-mix(in srgb, var(--bg-solid) 97%, transparent); background-image: var(--backdrop);
+  border: 1px solid var(--line-strong); box-shadow: var(--shadow), 0 18px 40px rgba(0, 0, 0, .45);
+  transform-origin: top center; animation: pop-drop calc(.22s * var(--speed, 1)) var(--ease, cubic-bezier(.2, .8, .2, 1)) both; }
+.popover.up { transform-origin: bottom center; translate: 0 -100%; animation-name: pop-rise; }
+@keyframes pop-drop { from { opacity: 0; transform: translateY(-6px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes pop-rise { from { opacity: 0; transform: translateY(6px) scale(.96); } to { opacity: 1; transform: none; } }
+.pop-playlists .sp-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pop-playlists .side-link { margin-top: 8px; }
+
+.awake-quick { display: flex; flex-direction: column; gap: 10px; }
+.awake-quick-head { display: flex; align-items: center; gap: 8px; }
+.awake-quick-head > div { display: flex; flex-direction: column; min-width: 0; }
+.awake-quick-head small { font-size: 10.5px; color: var(--text-faint); }
+.awake-quick-head.on > svg { color: var(--ok); }
+.btn.small { padding: 4px 9px; font-size: 11px; }
+.awake-w { position: relative; }
+.awake-w .awake-caret { margin-left: auto; opacity: .55; transition: rotate calc(.2s * var(--speed, 1)) var(--ease); }
+.awake-w.open .awake-caret { rotate: 180deg; }
+.spotify-w .media-controls button.on svg { rotate: 180deg; }
+.spotify-w .media-controls button svg { transition: rotate calc(.2s * var(--speed, 1)) var(--ease); }
+
+/* ---------------- hub: tools, timer, links ---------------- */
+.hub-tools { display: flex; flex-direction: column; gap: 10px; }
+.tool-knobs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.tool-knob { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hub-tool-card { padding: 10px; border-radius: 12px; background: var(--field); }
+.tool-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.side-app.tool { padding: 8px 2px; }
+.side-app.tool svg { color: var(--accent); }
+.switch.compact-row { padding: 6px 0; }
+.switch.compact-row small { font-size: 10px; }
+.hub-timer { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 12px; background: var(--field); }
+.hub-timer .hub-up .icon-btn { margin-left: 4px; }
+
+.hub-links { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+.hub-links h4 { margin: 0; font-size: 12.5px; display: flex; align-items: center; gap: 5px; }
+.link-form { display: flex; flex-direction: column; gap: 5px; }
+.link-form input { width: 100%; }
+.link-list { display: flex; flex-direction: column; gap: 3px; }
+.link-item-wrap { position: relative; }
+.link-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 6px; border-radius: 9px; text-align: left; }
+.link-item:hover { background: var(--field); }
+.link-ico { width: 24px; height: 24px; flex-shrink: 0; display: grid; place-items: center; border-radius: 7px; background: color-mix(in srgb, var(--text) 8%, transparent); color: var(--text-dim); overflow: hidden; }
+.link-ico img { width: 16px; height: 16px; }
+.link-text { display: flex; flex-direction: column; min-width: 0; }
+.link-text b { font-size: 11.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.link-text small { font-size: 9.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.link-item-wrap .side-unpin { top: 50%; right: 4px; translate: 0 -50%; }
+
+/* ---------------- hub side panel can open to the left ---------------- */
+.hub-side.side-left { left: auto; right: calc(100% - 30px); translate: 40px -50%; border-radius: 28px 0 0 28px;
+  -webkit-mask: radial-gradient(circle 252px at calc(100% + 198px) 50%, transparent 251px, #000 252px);
+  mask: radial-gradient(circle 252px at calc(100% + 198px) 50%, transparent 251px, #000 252px); }
+.hub-side.side-left.open { translate: 0 -50%; }
+.hub-side.side-left .side-inner { inset: 14px 74px 14px 16px; }
